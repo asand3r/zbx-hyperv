@@ -10,7 +10,7 @@ The script wrote with PowerShell and requires at least version 3.0 and Hyper-V m
 
 **Latest stable version:** 0.1
 
-__Please, read [Requirements and Installation](https://github.com/asand3r/zbx-hpsmartarray/wiki/Requirements-and-Installation) section in Wiki before use. Need to edit zabbix_agentd.conf file.__  
+__Please, read [Requirements and Installation](https://github.com/asand3r/zbx-hyperv/wiki/Requirements-and-Installation) section in Wiki before use.__  
 
 ## Dependencies
  - None
