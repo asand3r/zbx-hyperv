@@ -46,7 +46,7 @@ PS C:\> .\zbx-hyperv.ps1 full
 ```
 
 ## Zabbix templates
-In addition I've attached preconfigured Zabbix Template here, so you can use it in your environment. It's using Low Level Discovery functionality.
+In addition I've attached preconfigured Zabbix Template for version 4.0 and above (doesn't work with 3.0, 3.2, 3.4!), so you can use it in your environment. It's using Low Level Discovery functionality.
 
 **Tested with**:  
 Hyper-V on Windows Server 2012 R2
