@@ -4,8 +4,10 @@ PowerShell script for Zabbix to monitor Hyper-V server.
 Zabbix Share page:  
 Also you can contact me with Telegram: @asand3r  
 
+![alt_text](https://pp.userapi.com/c846121/v846121316/a7882/vh_mCqtLkAw.jpg)
 zbx-hyperv provides possibility to make Low Level Discovery of Hyper-V server VMs and retrieve their parameters, such "Memory Assigned", "CPU Usage", "Status" etc.  
-The script wrote with PowerShell and requires at least version 3.0 and Hyper-V module installed.  
+The script wrote with PowerShell and requires at least version 3.0 and Hyper-V module installed.
+
 **Latest stable version:** 0.1
 
 __Please, read [Requirements and Installation](https://github.com/asand3r/zbx-hpsmartarray/wiki/Requirements-and-Installation) section in Wiki before use. Need to edit zabbix_agentd.conf file.__  
@@ -44,8 +46,7 @@ PS C:\> .\zbx-hyperv.ps1 full
 ```
 
 ## Zabbix templates
-In addition I've attached preconfigured Zabbix Template here, so you can use it in your environment. It's using Low Level Discovery functionality.   
-Have fun and rate it on [share.zabbix.com](https://share.zabbix.com/storage-devices/hp/hp-smart-array-controller) if you like it. =)
+In addition I've attached preconfigured Zabbix Template here, so you can use it in your environment. It's using Low Level Discovery functionality.
 
 **Tested with**:  
 Hyper-V on Windows Server 2012 R2
