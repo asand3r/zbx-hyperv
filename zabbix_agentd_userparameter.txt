@@ -1,0 +1,1 @@
+UserParameter=ms.hyperv[*],powershell -NoProfile -NoLogo -File "%ProgramFiles%\Zabbix Agent\scripts\zbx-hyperv.ps1" $1
