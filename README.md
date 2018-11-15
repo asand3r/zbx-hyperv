@@ -5,48 +5,45 @@ Zabbix Share page:
 Also you can contact me with Telegram: @asand3r  
 
 ![alt_text](https://pp.userapi.com/c846121/v846121316/a7882/vh_mCqtLkAw.jpg)
-zbx-hyperv provides possibility to make Low Level Discovery of Hyper-V server VMs and retrieve their parameters, such "Memory Assigned", "CPU Usage", "Status" etc. Attached template works only with Zabbix 4.0 and above.  
+zbx-hyperv provides possibility to make Low Level Discovery of Hyper-V server VMs and retrieve their parameters, such "Memory Assigned", "CPU Usage", "State" etc. Attached template works only with Zabbix 4.0 and above.  
 The script wrote with PowerShell and requires at least version 3.0 and Hyper-V module installed.
 
-**Latest stable version:** 0.1
+**Latest stable version:** 0.2
 
 __Please, read [Requirements and Installation](https://github.com/asand3r/zbx-hyperv/wiki/Requirements-and-Installation) section in Wiki before use.__  
 
 ## Dependencies
- - None
+ - PowerShell v3.0+
 
 ## Feautres  
 **Low Level Discovery:**
  - [x] Virtual Machines
+ - [x] Hyper-V Services
 
 **Component status:**
  - [x] JSON for dependent items for VMs
 
 ## Supported arguments  
 **-action**  
-What we want to do - make LLD or get component health status (takes: lld, full)  
-**-VMName**  
-Virtual Machine name if you want to get JSON only for one VM.  
+What we want to do - make LLD or get JSON with metric for dependent items (takes: lld, full)  
 **-version**  
 Print script version and exit.  
 
-## Usage
-Soon, you will find more examples on Wiki page, but I placed some cases here too.  
-- LLD of enclosures, controllers, virtual disks and physical disks:
+## Usage 
+- LLD of virtual machines:
 ```powershell
 PS C:\> .\zbx-hyperv.ps1 lld
-
-{"data":[{"{#VM.NAME}":"vm01","{#VM.STATE}":"RUNNING","{#VM.VERSION}":"5.0","{#VM.CLUSTERED}":1,"{#VM.HOST}":"hv01","{#VM.GEN}":2}, ...}
+{"data":[{"{#VM.NAME}":"vm01","{#VM.VERSION}":"5.0","{#VM.CLUSTERED}":1,"{#VM.HOST}":"hv01","{#VM.GEN}":2,"{#VM.ISREPLICA}":0}, ...}
 ```
-- Request JSON with all VMs parameters:
+- Request JSON with all VMs metrics:
 ```powershell
 PS C:\> .\zbx-hyperv.ps1 full
-{"vm01":{"IntegrationServicesState":"","MemoryAssigned":1073741824,"IntegrationServicesVersion":"","NumaSockets":1,"Uptime":132565,
-"State":"Running","NumaNodes":1,"CPUUsage":0,"Status":"Operating normally"},... }
+{"vm01":{"IntSvcVer":"6.3.9600.18692","ReplMode":0,"Memory":4294967296,"ReplState":0,"NumaSockets":1,"Uptime":53505,"State":2,
+"NumaNodes":1,"ReplHealth":0,"CPUUsage":0,"IntSvcState":0},...}
 ```
 
 ## Zabbix templates
 In addition I've attached preconfigured Zabbix Template for version 4.0 and above (doesn't work with 3.0, 3.2, 3.4!), so you can use it in your environment. It's using Low Level Discovery functionality.
 
 **Tested with**:  
-Hyper-V on Windows Server 2012 R2
+Hyper-V on Windows Server 2012 and 2012 R2 and doesnt work with Hyper-V 2008 R2 and lower.

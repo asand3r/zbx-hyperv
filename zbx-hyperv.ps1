@@ -11,20 +11,17 @@
     .PARAMETER action
     What we want to do - make LLD or get full JSON with metrics.
 
-    .PARAMETER VMName
-    Virtual Machine name if you want to get JSON only for one VM.
-
     .PARAMETER version
     Print verion number and exit.
 
     .EXAMPLE
     zbx-hyperv.ps1 lld
-    {"data":[{"{#VM.NAME}":"vm01","{#VM.STATE}":"RUNNING","{#VM.VERSION}":"5.0","{#VM.CLUSTERED}":1,"{#VM.HOST}":"hv01","{#VM.GEN}":2}}
+    {"data":[{"{#VM.NAME}":"vm01","{#VM.VERSION}":"5.0","{#VM.CLUSTERED}":0,"{#VM.HOST}":"hv01","{#VM.GEN}":2,"{#VM.ISREPLICA}":0}
 
     .EXAMPLE
     zbx-hyperv.ps1 full
-    {"shv-vhaproxy01":{"IntegrationServicesState":"","MemoryAssigned":1073741824,"IntegrationServicesVersion":"","NumaSockets":1,
-    "Uptime":131276,"State":"Running","NumaNodes":1,"CPUUsage":0,"Status":"Operating normally"}, ...}
+    {"vm01":{"IntegrationServicesState":"","MemoryAssigned":0,"IntegrationServicesVersion":"","NumaSockets":1,"Uptime":0,"State":3,
+    "NumaNodes":1,"CPUUsage":0,"Status":"Operating normally","ReplicationHealth":0,"ReplicationState":0}, ...}
     
     .NOTES
     Author: Khatsayuk Alexander
@@ -33,62 +30,66 @@
 
 Param (
     [switch]$version = $False,
-    [ValidateSet("lld","full")][Parameter(Position=0,Mandatory=$True)][string]$action,
-    [Parameter(Position=1,Mandatory=$False)]$VMName
+    [Parameter(Position=0,Mandatory=$False)][string]$action
 )
 
 # Script version
-$VERSION_NUM="0.1"
+$VERSION_NUM="0.2"
 if ($version) {
     Write-Host $VERSION_NUM
     break
 }
 
-
+# Low-Level Discovery function
 function Make-LLD() {
-    $vms = Get-VM | Select @{name = "{#VM.NAME}"; e={$_.VMName}},
-                           @{name = "{#VM.STATE}"; e={$_.State.tostring().ToUpper()}},
-                           @{name = "{#VM.VERSION}"; e={$_.Version}},
-                           @{name = "{#VM.CLUSTERED}"; e={[int]$_.IsClustered}},
-                           @{name = "{#VM.HOST}"; e={$_.ComputerName}},
-                           @{name = "{#VM.GEN}"; e={$_.Generation}}
+    $vms = Get-VM | Select-Object @{Name = "{#VM.NAME}"; e={$_.VMName}},
+                                  @{Name = "{#VM.VERSION}"; e={$_.Version}},
+                                  @{Name = "{#VM.CLUSTERED}"; e={[int]$_.IsClustered}},
+                                  @{Name = "{#VM.HOST}"; e={$_.ComputerName}},
+                                  @{Name = "{#VM.GEN}"; e={$_.Generation}},
+                                  @{Name = "{#VM.ISREPLICA}"; e={[int]$_.ReplicationMode}}
     return ConvertTo-Json @{"data" = $vms} -Compress
 }
 
+# JSON for dependent items
 function Get-FullJSON() {
-    Param (
-        [string]$VM
-    )
-
     $to_json = @{}
     
-    if ($VM) {
-        $vms = $VM
-    } else {
-        $vms = '*'
+    # Because of IntegrationServicesState is string, I've made a dict to map it to int (better for Zabbix):
+    # 0 - Up to date
+    # 1 - Update required
+    # 2 - unknown state
+    $integrationSvcState = @{
+        "Up to date" = 0;
+        "Update required" = 1;
+        "" = 2
     }
 
-    Get-VM -Name $vms | ForEach-Object {
-        $vm_data = [psobject]@{"State" = [string]$_.State;
-                               "Status" = $_.Status;
+    Get-VM | ForEach-Object {
+        $vm_data = [psobject]@{"State" = [int]$_.State;
                                "Uptime" = $_.Uptime.TotalSeconds;
                                "NumaNodes" = $_.NumaNodesCount;
                                "NumaSockets" = $_.NumaSocketCount;
-                               "IntegrationServicesVersion" = [string]$_.IntegrationServicesVersion;
-                               "IntegrationServicesState" = $_.IntegrationServicesState;
-                               "CPUUsage" = $_.Cpuusage;
-                               "MemoryAssigned" = $_.MemoryAssigned;
+                               "IntSvcVer" = [string]$_.IntegrationServicesVersion;
+                               "IntSvcState" = $integrationSvcState[$_.IntegrationServicesState];
+                               "CPUUsage" = $_.CPUUsage;
+                               "Memory" = $_.MemoryAssigned;
+                               "ReplMode" = [int]$_.ReplicationMode;
+                               "ReplState" = [int]$_.ReplicationState;
+                               "ReplHealth" = [int]$_.ReplicationHealth;
                                }
         $to_json += @{$_.VMName = $vm_data}
     }
-    ConvertTo-Json $to_json -Compress
+    return ConvertTo-Json $to_json -Compress
 }
 
+# Main switch
 switch ($action) {
     "lld" {
         Write-Host $(Make-LLD)
     }
     "full" {
-        Write-Host $(Get-FullJSON -VM $VMName)
+        Write-Host $(Get-FullJSON)
     }
+    Default {Write-Host "Syntax error: Use 'lld' or 'full' as first argument"}
 }

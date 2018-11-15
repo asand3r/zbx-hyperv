@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-07-25T12:21:41Z</date>
+    <date>2018-11-15T11:07:57Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Hyper-V Server VMs</template>
-            <name>Hyper-V Server VMs</name>
+            <template>Template Hyper-V Server</template>
+            <name>Template Hyper-V Server</name>
             <description>Template discover Hyper-V VMs and check some their parameters.</description>
             <groups>
                 <group>
@@ -18,6 +18,9 @@
                 </group>
             </groups>
             <applications>
+                <application>
+                    <name>Hyper-V Services</name>
+                </application>
                 <application>
                     <name>Hyper-V VMs</name>
                 </application>
@@ -90,7 +93,7 @@
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ms.hyperv[lld]</key>
-                    <delay>30m</delay>
+                    <delay>{$LLD}</delay>
                     <status>0</status>
                     <allowed_hosts/>
                     <snmpv3_contextname/>
@@ -111,7 +114,14 @@
                     <filter>
                         <evaltype>0</evaltype>
                         <formula/>
-                        <conditions/>
+                        <conditions>
+                            <condition>
+                                <macro>{#VM.NAME}</macro>
+                                <value>^ref</value>
+                                <operator>9</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
                     </filter>
                     <lifetime>1d</lifetime>
                     <description>Discovery Hyper-V virtual machines</description>
@@ -188,12 +198,12 @@
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntegrationServicesState&quot;]</key>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;]</key>
                             <delay>0</delay>
                             <history>{$HISTORY}</history>
-                            <trends>0</trends>
+                            <trends>{$TRENDS}</trends>
                             <status>0</status>
-                            <value_type>1</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units/>
                             <snmpv3_contextname/>
@@ -214,12 +224,14 @@
                             <description>{#VM.NAME} Integration Services state</description>
                             <inventory_link>0</inventory_link>
                             <applications/>
-                            <valuemap/>
+                            <valuemap>
+                                <name>Hyper-V VM Integration Services State</name>
+                            </valuemap>
                             <logtimefmt/>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#VM.NAME}']['IntegrationServicesState']</params>
+                                    <params>$['{#VM.NAME}']['IntSvcState']</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -255,12 +267,12 @@
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntegrationServicesVersion&quot;]</key>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntSvcVer&quot;]</key>
                             <delay>0</delay>
                             <history>{$HISTORY}</history>
                             <trends>0</trends>
                             <status>0</status>
-                            <value_type>4</value_type>
+                            <value_type>1</value_type>
                             <allowed_hosts/>
                             <units/>
                             <snmpv3_contextname/>
@@ -286,7 +298,7 @@
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#VM.NAME}']['IntegrationServicesVersion']</params>
+                                    <params>$['{#VM.NAME}']['IntSvcVer']</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -322,7 +334,7 @@
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>ms.hyperv.vm[{#VM.NAME},&quot;MemoryAssigned&quot;]</key>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;Memory&quot;]</key>
                             <delay>0</delay>
                             <history>{$HISTORY}</history>
                             <trends>{$TRENDS}</trends>
@@ -353,7 +365,7 @@
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#VM.NAME}']['MemoryAssigned']</params>
+                                    <params>$['{#VM.NAME}']['Memory']</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -519,6 +531,213 @@
                             </master_item>
                         </item_prototype>
                         <item_prototype>
+                            <name>VM {#VM.NAME} Replication health</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>{#VM.NAME} replication health.</description>
+                            <inventory_link>0</inventory_link>
+                            <applications/>
+                            <valuemap>
+                                <name>Hyper-V VM Replication Health</name>
+                            </valuemap>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#VM.NAME}']['ReplHealth']</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>VM {#VM.NAME}</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM {#VM.NAME} Replication mode</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>{#VM.NAME} replication mode.</description>
+                            <inventory_link>0</inventory_link>
+                            <applications/>
+                            <valuemap>
+                                <name>Hyper-V VM Replication Mode</name>
+                            </valuemap>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#VM.NAME}']['ReplMode']</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>VM {#VM.NAME}</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>VM {#VM.NAME} Replication state</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>{#VM.NAME} replication state.</description>
+                            <inventory_link>0</inventory_link>
+                            <applications/>
+                            <valuemap>
+                                <name>Hyper-V VM Replication State</name>
+                            </valuemap>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#VM.NAME}']['ReplState']</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>VM {#VM.NAME}</name>
+                                </application_prototype>
+                            </application_prototypes>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
                             <name>VM {#VM.NAME} State</name>
                             <type>18</type>
                             <snmp_community/>
@@ -526,9 +745,9 @@
                             <key>ms.hyperv.vm[{#VM.NAME},&quot;State&quot;]</key>
                             <delay>0</delay>
                             <history>{$HISTORY}</history>
-                            <trends>0</trends>
+                            <trends>{$TRENDS}</trends>
                             <status>0</status>
-                            <value_type>1</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units/>
                             <snmpv3_contextname/>
@@ -549,79 +768,14 @@
                             <description>{#VM.NAME} State</description>
                             <inventory_link>0</inventory_link>
                             <applications/>
-                            <valuemap/>
+                            <valuemap>
+                                <name>Hyper-V VM State</name>
+                            </valuemap>
                             <logtimefmt/>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#VM.NAME}']['State']</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
-                            <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>1</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes>
-                                <application_prototype>
-                                    <name>VM {#VM.NAME}</name>
-                                </application_prototype>
-                            </application_prototypes>
-                            <master_item>
-                                <key>ms.hyperv[full]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>VM {#VM.NAME} Status</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>ms.hyperv.vm[{#VM.NAME},&quot;Status&quot;]</key>
-                            <delay>0</delay>
-                            <history>{$HISTORY}</history>
-                            <trends>0</trends>
-                            <status>0</status>
-                            <value_type>1</value_type>
-                            <allowed_hosts/>
-                            <units/>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>{#VM.NAME} Status</description>
-                            <inventory_link>0</inventory_link>
-                            <applications/>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#VM.NAME}']['Status']</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -722,7 +876,7 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Hyper-V Server VMs:ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;].avg(30m)}&gt;85</expression>
+                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;].avg(30m)}&gt;85</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} CPU usage too high</name>
@@ -747,7 +901,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Hyper-V Server VMs:ms.hyperv.vm[{#VM.NAME},&quot;IntegrationServicesState&quot;].count(#5,&quot;Update required&quot;,like)}&gt;3</expression>
+                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;].last()}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} integration services requires update</name>
@@ -772,16 +926,17 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Hyper-V Server VMs:ms.hyperv.vm[{#VM.NAME},&quot;State&quot;].count(#5,&quot;Running&quot;,ne)}&gt;2</expression>
+                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;].count(#3,1,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>VM {#VM.NAME} not running</name>
+                            <name>VM {#VM.NAME} replicationg health is {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
-                            <priority>1</priority>
-                            <description>VM {#VM.NAME} not in &quot;Running&quot; state ({ITEM.LASTVALUE})</description>
+                            <priority>2</priority>
+                            <description>VM {#VM.NAME} replicationg health is not good now.&#13;
+Replication state: {ITEM.LASTVALUE}</description>
                             <type>0</type>
                             <manual_close>0</manual_close>
                             <dependencies/>
@@ -792,21 +947,47 @@
                                 </tag>
                                 <tag>
                                     <tag>vm</tag>
-                                    <value>not running</value>
+                                    <value>replication</value>
                                 </tag>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Hyper-V Server VMs:ms.hyperv.vm[{#VM.NAME},&quot;Status&quot;].count(#5,&quot;Operating normally&quot;,ne)}&gt;2</expression>
+                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;].count(#3,4,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>VM {#VM.NAME} status bad</name>
+                            <name>VM {#VM.NAME} replicationg state is {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
                             <priority>2</priority>
-                            <description>VM {#VM.NAME} status is not &quot;Operating normally&quot; ({ITEM.LASTVALUE})</description>
+                            <description>VM {#VM.NAME} replicationg state is not replicating now.&#13;
+Replication state: {ITEM.LASTVALUE}</description>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                    <value/>
+                                </tag>
+                                <tag>
+                                    <tag>vm</tag>
+                                    <value>replication</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;State&quot;].count(#3,2,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>VM {#VM.NAME} state is not running</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>3</priority>
+                            <description>VM {#VM.NAME} not in &quot;Running&quot; state ({ITEM.LASTVALUE})</description>
                             <type>0</type>
                             <manual_close>0</manual_close>
                             <dependencies/>
@@ -843,12 +1024,189 @@
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                 </discovery_rule>
+                <discovery_rule>
+                    <name>Hyper-V Services</name>
+                    <type>7</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>service.discovery</key>
+                    <delay>1h</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#SERVICE.NAME}</macro>
+                                <value>vmms</value>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1d</lifetime>
+                    <description>Discovery Hyper-V Services.</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Service {#SERVICE.NAME} status</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>service.info[{#SERVICE.NAME}]</key>
+                            <delay>1m</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Service {SERVICE.NAME} state.</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Hyper-V Services</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template Hyper-V Server:service.info[{#SERVICE.NAME}].nodata(5m)}=1</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Cannot check {#SERVICE.NAME} service state</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description>Невозможно проверить состояние службы {#SERVICE.NAME}.</description>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                    <value/>
+                                </tag>
+                                <tag>
+                                    <tag>windows service</tag>
+                                    <value/>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template Hyper-V Server:service.info[{#SERVICE.NAME}].count(#3,0,ne)}=3</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Service {#SERVICE.NAME} is {ITEM.VALUE}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description>Служба {#SERVICE.NAME} не запущена - {ITEM.VALUE}.</description>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                    <value/>
+                                </tag>
+                                <tag>
+                                    <tag>windows service</tag>
+                                    <value/>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
             </discovery_rules>
             <httptests/>
             <macros>
                 <macro>
                     <macro>{$HISTORY}</macro>
                     <value>14d</value>
+                </macro>
+                <macro>
+                    <macro>{$LLD}</macro>
+                    <value>30m</value>
                 </macro>
                 <macro>
                     <macro>{$TRENDS}</macro>
@@ -865,7 +1223,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Hyper-V Server VMs:ms.hyperv[full].nodata(5m)}=1</expression>
+            <expression>{Template Hyper-V Server:ms.hyperv[full].nodata(10m)}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Cannot obtain VMs data</name>
@@ -881,9 +1239,252 @@
             <tags>
                 <tag>
                     <tag>hyperv</tag>
+                    <value>vm</value>
+                </tag>
+                <tag>
+                    <tag>master item</tag>
                     <value/>
                 </tag>
             </tags>
         </trigger>
     </triggers>
+    <value_maps>
+        <value_map>
+            <name>Hyper-V VM Integration Services State</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Up to date</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Update required</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>Unknown</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+        <value_map>
+            <name>Hyper-V VM Replication Health</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>NotApplicable</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Normal</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>Warning</newvalue>
+                </mapping>
+                <mapping>
+                    <value>3</value>
+                    <newvalue>Critical</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+        <value_map>
+            <name>Hyper-V VM Replication Mode</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>None</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Primary</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>Replica</newvalue>
+                </mapping>
+                <mapping>
+                    <value>3</value>
+                    <newvalue>TestReplica</newvalue>
+                </mapping>
+                <mapping>
+                    <value>4</value>
+                    <newvalue>ExtendedReplica</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+        <value_map>
+            <name>Hyper-V VM Replication State</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Disabled</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>ReadyForInitialReplication</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>InitialReplicationInProgress</newvalue>
+                </mapping>
+                <mapping>
+                    <value>3</value>
+                    <newvalue>WaitingForInitialReplication</newvalue>
+                </mapping>
+                <mapping>
+                    <value>4</value>
+                    <newvalue>Replicating</newvalue>
+                </mapping>
+                <mapping>
+                    <value>5</value>
+                    <newvalue>PreparedForFailover</newvalue>
+                </mapping>
+                <mapping>
+                    <value>6</value>
+                    <newvalue>FailedOverWaitingCompletion</newvalue>
+                </mapping>
+                <mapping>
+                    <value>7</value>
+                    <newvalue>FailedOver</newvalue>
+                </mapping>
+                <mapping>
+                    <value>8</value>
+                    <newvalue>Suspended</newvalue>
+                </mapping>
+                <mapping>
+                    <value>9</value>
+                    <newvalue>Error</newvalue>
+                </mapping>
+                <mapping>
+                    <value>10</value>
+                    <newvalue>WaitingForStartResynchronize</newvalue>
+                </mapping>
+                <mapping>
+                    <value>11</value>
+                    <newvalue>Resynchronizing</newvalue>
+                </mapping>
+                <mapping>
+                    <value>12</value>
+                    <newvalue>ResynchronizeSuspended</newvalue>
+                </mapping>
+                <mapping>
+                    <value>13</value>
+                    <newvalue>RecoveryInProgress</newvalue>
+                </mapping>
+                <mapping>
+                    <value>14</value>
+                    <newvalue>FailbackInProgress</newvalue>
+                </mapping>
+                <mapping>
+                    <value>15</value>
+                    <newvalue>FailbackComplete</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+        <value_map>
+            <name>Hyper-V VM State</name>
+            <mappings>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Other</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>Running</newvalue>
+                </mapping>
+                <mapping>
+                    <value>3</value>
+                    <newvalue>Off</newvalue>
+                </mapping>
+                <mapping>
+                    <value>4</value>
+                    <newvalue>Stopping</newvalue>
+                </mapping>
+                <mapping>
+                    <value>6</value>
+                    <newvalue>Saved</newvalue>
+                </mapping>
+                <mapping>
+                    <value>9</value>
+                    <newvalue>Paused</newvalue>
+                </mapping>
+                <mapping>
+                    <value>10</value>
+                    <newvalue>Starting</newvalue>
+                </mapping>
+                <mapping>
+                    <value>11</value>
+                    <newvalue>Reset</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32773</value>
+                    <newvalue>Saving</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32776</value>
+                    <newvalue>Pausing</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32777</value>
+                    <newvalue>Resuming</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32779</value>
+                    <newvalue>FastSaved</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32780</value>
+                    <newvalue>FastSaving</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32781</value>
+                    <newvalue>RunningCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32782</value>
+                    <newvalue>OffCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32783</value>
+                    <newvalue>StoppingCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32784</value>
+                    <newvalue>SavedCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32785</value>
+                    <newvalue>PausedCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32786</value>
+                    <newvalue>StartingCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32787</value>
+                    <newvalue>ResetCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32788</value>
+                    <newvalue>SavingCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32789</value>
+                    <newvalue>PausingCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32790</value>
+                    <newvalue>ResumingCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32791</value>
+                    <newvalue>FastSavedCritical</newvalue>
+                </mapping>
+                <mapping>
+                    <value>32792</value>
+                    <newvalue>FastSavingCritical</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
 </zabbix_export>
