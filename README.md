@@ -1,8 +1,9 @@
 # zbx-hyperv
 PowerShell script for Zabbix to monitor Hyper-V server.  
   
-Zabbix Share page:  
-Also you can contact me with Telegram: @asand3r  
+Zabbix Share page: https://share.zabbix.com/virtualization/hyper-v/hyper-v-server  
+Also you can contact me with Telegram: @asand3r (English, Russian)  
+Rate it on Zabbix Share page, if it helps you. =)
 
 ![alt_text](https://pp.userapi.com/c831508/v831508836/1d54c4/aL5ve9-JYSc.jpg)
 ![alt_text](https://pp.userapi.com/c831508/v831508836/1d54ce/WtGekdXFRHk.jpg)
