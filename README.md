@@ -4,7 +4,8 @@ PowerShell script for Zabbix to monitor Hyper-V server.
 Zabbix Share page:  
 Also you can contact me with Telegram: @asand3r  
 
-![alt_text](https://pp.userapi.com/c846121/v846121316/a7882/vh_mCqtLkAw.jpg)
+![alt_text](https://pp.userapi.com/c831508/v831508836/1d54c4/aL5ve9-JYSc.jpg)
+![alt_text](https://pp.userapi.com/c831508/v831508836/1d54ce/WtGekdXFRHk.jpg)
 zbx-hyperv provides possibility to make Low Level Discovery of Hyper-V server VMs and retrieve their parameters, such "Memory Assigned", "CPU Usage", "State" etc. Attached template works only with Zabbix 4.0 and above.  
 The script wrote with PowerShell and requires at least version 3.0 and Hyper-V module installed.
 
