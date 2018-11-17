@@ -34,7 +34,7 @@ Param (
 )
 
 # Script version
-$VERSION_NUM="0.2"
+$VERSION_NUM="0.2.1"
 if ($version) {
     Write-Host $VERSION_NUM
     break
@@ -67,7 +67,7 @@ function Get-FullJSON() {
 
     Get-VM | ForEach-Object {
         $vm_data = [psobject]@{"State" = [int]$_.State;
-                               "Uptime" = $_.Uptime.TotalSeconds;
+                               "Uptime" = [math]::Round($_.Uptime.TotalSeconds);
                                "NumaNodes" = $_.NumaNodesCount;
                                "NumaSockets" = $_.NumaSocketCount;
                                "IntSvcVer" = [string]$_.IntegrationServicesVersion;
