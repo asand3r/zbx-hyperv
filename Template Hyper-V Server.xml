@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-15T11:07:57Z</date>
+    <date>2018-11-17T10:06:40Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template Hyper-V Server</template>
-            <name>Template Hyper-V Server</name>
+            <template>RGr Template Hyper-V Server</template>
+            <name>RGr Template Hyper-V Server</name>
             <description>Template discover Hyper-V VMs and check some their parameters.</description>
             <groups>
                 <group>
@@ -876,7 +876,7 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;].avg(30m)}&gt;85</expression>
+                            <expression>{RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;].avg(30m)}&gt;85</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} CPU usage too high</name>
@@ -901,7 +901,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;].last()}=1</expression>
+                            <expression>{RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;].last()}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} integration services requires update</name>
@@ -926,7 +926,7 @@
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;].count(#3,1,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
+                            <expression>{RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;].count(#3,1,ne)}=3 and {RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} replicationg health is {ITEM.VALUE}</name>
@@ -952,7 +952,7 @@ Replication state: {ITEM.LASTVALUE}</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;].count(#3,4,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
+                            <expression>{RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;].count(#3,4,ne)}=3 and {RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} replicationg state is {ITEM.VALUE}</name>
@@ -978,7 +978,7 @@ Replication state: {ITEM.LASTVALUE}</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;State&quot;].count(#3,2,ne)}=3 and {Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}&lt;&gt;0</expression>
+                            <expression>{RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;State&quot;].count(#3,2,ne)}=3 and {RGr Template Hyper-V Server:ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;].last()}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>VM {#VM.NAME} state is not running</name>
@@ -1126,7 +1126,7 @@ Replication state: {ITEM.LASTVALUE}</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:service.info[{#SERVICE.NAME}].nodata(5m)}=1</expression>
+                            <expression>{RGr Template Hyper-V Server:service.info[{#SERVICE.NAME}].nodata(5m)}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Cannot check {#SERVICE.NAME} service state</name>
@@ -1151,7 +1151,7 @@ Replication state: {ITEM.LASTVALUE}</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template Hyper-V Server:service.info[{#SERVICE.NAME}].count(#3,0,ne)}=3</expression>
+                            <expression>{RGr Template Hyper-V Server:service.info[{#SERVICE.NAME}].count(#3,0,ne)}=3</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Service {#SERVICE.NAME} is {ITEM.VALUE}</name>
@@ -1223,7 +1223,7 @@ Replication state: {ITEM.LASTVALUE}</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template Hyper-V Server:ms.hyperv[full].nodata(10m)}=1</expression>
+            <expression>{RGr Template Hyper-V Server:ms.hyperv[full].nodata(30m)}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Cannot obtain VMs data</name>
