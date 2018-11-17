@@ -10,7 +10,7 @@ Rate it on Zabbix Share page, if it helps you. =)
 zbx-hyperv provides possibility to make Low Level Discovery of Hyper-V server VMs and retrieve their parameters, such "Memory Assigned", "CPU Usage", "State" etc. Attached template works only with Zabbix 4.0 and above.  
 The script wrote with PowerShell and requires at least version 3.0 and Hyper-V module installed.
 
-**Latest stable version:** 0.2
+**Latest stable version:** 0.2.1
 
 __Please, read [Requirements and Installation](https://github.com/asand3r/zbx-hyperv/wiki/Requirements-and-Installation) section in Wiki before use.__  
 
@@ -48,4 +48,4 @@ PS C:\> .\zbx-hyperv.ps1 full
 In addition I've attached preconfigured Zabbix Template for version 4.0 and above (doesn't work with 3.0, 3.2, 3.4!), so you can use it in your environment. It's using Low Level Discovery functionality.
 
 **Tested with**:  
-Hyper-V on Windows Server 2012 and 2012 R2 and doesnt work with Hyper-V 2008 R2 and lower.
+Hyper-V on Windows Server 2012, 2012 R2 and 2016 and doesn't work with Hyper-V 2008 R2 and lower.
