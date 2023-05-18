@@ -40,7 +40,7 @@ v0.2.5</description>
                             <name>Hyper-V VMs</name>
                         </application>
                     </applications>
-                    <request_method>POST</request_method>
+                    <!-- <request_method>POST</request_method> -->
                     <triggers>
                         <trigger>
                             <expression>{nodata(30m)}=1</expression>
@@ -101,7 +101,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                             <trigger_prototypes>
                                 <trigger_prototype>
                                     <expression>{avg(30m)}&gt;85</expression>
@@ -145,7 +145,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                             <trigger_prototypes>
                                 <trigger_prototype>
                                     <expression>{last()}=1</expression>
@@ -187,7 +187,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                         <item_prototype>
                             <name>VM {#VM.NAME} Memory assigned</name>
@@ -212,7 +212,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                         <item_prototype>
                             <name>VM {#VM.NAME} Numa nodes count</name>
@@ -236,7 +236,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                         <item_prototype>
                             <name>VM {#VM.NAME} Numa sockets count</name>
@@ -260,7 +260,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                         <item_prototype>
                             <name>VM {#VM.NAME} Replication health</name>
@@ -365,7 +365,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                         <item_prototype>
                             <name>VM {#VM.NAME} Uptime</name>
@@ -390,7 +390,7 @@ v0.2.5</description>
                             <master_item>
                                 <key>ms.hyperv[full]</key>
                             </master_item>
-                            <request_method>POST</request_method>
+                            <!-- <request_method>POST</request_method> -->
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
@@ -442,7 +442,7 @@ Replication state: {ITEM.LASTVALUE}</description>
                             </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
-                    <request_method>POST</request_method>
+                    <!-- <request_method>POST</request_method> -->
                 </discovery_rule>
                 <discovery_rule>
                     <name>Hyper-V Services</name>

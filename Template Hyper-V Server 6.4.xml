@@ -1,0 +1,922 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>6.4</version>
+    <template_groups>
+        <template_group>
+            <uuid>7df96b18c230490a9a0a9e2307226338</uuid>
+            <name>Templates</name>
+        </template_group>
+        <template_group>
+            <uuid>02e4df4f20b848e79267641790f241da</uuid>
+            <name>Templates/Virtualization</name>
+        </template_group>
+    </template_groups>
+    <templates>
+        <template>
+            <uuid>db82b6ae91614b53a7621c7b5636c6ea</uuid>
+            <template>Template Hyper-V Server</template>
+            <name>Template Hyper-V Server</name>
+            <description>Template discover Hyper-V VMs and check some their parameters.
+v0.2.5</description>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+                <group>
+                    <name>Templates/Virtualization</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>98719d89404e4a1a8f73fde3656ab7b6</uuid>
+                    <name>Hyper-V VMs master item</name>
+                    <key>ms.hyperv[full]</key>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Hyper-V JSON master item.</description>
+                    <request_method>POST</request_method>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Hyper-V VMs</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>35fcc97df3bf4b7986b05be5460d8725</uuid>
+                            <expression>nodata(/Template Hyper-V Server/ms.hyperv[full],30m)=1</expression>
+                            <name>Cannot obtain VMs data</name>
+                            <priority>HIGH</priority>
+                            <description>Cannot obtain virtual machine data from Hyper-V server.</description>
+                            <manual_close>YES</manual_close>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                    <value>vm</value>
+                                </tag>
+                                <tag>
+                                    <tag>master item</tag>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>546c5687f572495ab4dfb6d2f2e89916</uuid>
+                    <name>Hyper-V VMs discovery</name>
+                    <key>ms.hyperv[lld]</key>
+                    <delay>{$LLD}</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#VM.NAME}</macro>
+                                <value>^ref</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1d</lifetime>
+                    <description>Discovery Hyper-V virtual machines</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>ef7459cf90ed4633997929809f14bd7f</uuid>
+                            <name>VM {#VM.NAME} CPU usage</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} CPU usage</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['CPUUsage']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>145286b4da9d43a9af9a27d7296d70a2</uuid>
+                                    <expression>avg(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;CPUUsage&quot;],30m)&gt;85</expression>
+                                    <name>VM {#VM.NAME} CPU usage too high</name>
+                                    <priority>WARNING</priority>
+                                    <description>CPU usage more than 85% for last 30 minutes.</description>
+                                    <tags>
+                                        <tag>
+                                            <tag>hyperv</tag>
+                                        </tag>
+                                        <tag>
+                                            <tag>vm</tag>
+                                            <value>cpu usage</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>526c45b9c0c940b58674c43f920cbdca</uuid>
+                            <name>VM {#VM.NAME} Integration Services state</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} Integration Services state</description>
+                            <valuemap>
+                                <name>Hyper-V VM Integration Services State</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['IntSvcState']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>94337766c82b4549a679a9fba995f0aa</uuid>
+                                    <expression>last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;IntSvcState&quot;])=1</expression>
+                                    <name>VM {#VM.NAME} integration services requires update</name>
+                                    <priority>INFO</priority>
+                                    <description>VM {#VM.NAME} requires to update Ingegration Services.</description>
+                                    <tags>
+                                        <tag>
+                                            <tag>hyperv</tag>
+                                        </tag>
+                                        <tag>
+                                            <tag>vm</tag>
+                                            <value>integration services</value>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bace5a448e5c4696bf3285ee41c6f0a1</uuid>
+                            <name>VM {#VM.NAME} Integration Services version</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;IntSvcVer&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <description>{#VM.NAME} Integration Services version</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['IntSvcVer']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f156d74d605a4fb8b6608d7f7862080a</uuid>
+                            <name>VM {#VM.NAME} Memory assigned</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;Memory&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <units>B</units>
+                            <description>{#VM.NAME} memory assigned</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['Memory']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>fa3a44d04528440fa4902d2643ef6218</uuid>
+                            <name>VM {#VM.NAME} Numa nodes count</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;NumaNodes&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} Numa nodes count</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['NumaNodes']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2727c763840b4104ad772cba5ae19627</uuid>
+                            <name>VM {#VM.NAME} Numa sockets count</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;NumaSockets&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} Numa sockets count</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['NumaSockets']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>8d51342164ef4ab49e2a60eb525b6dd1</uuid>
+                            <name>VM {#VM.NAME} Replication health</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} replication health.</description>
+                            <valuemap>
+                                <name>Hyper-V VM Replication Health</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['ReplHealth']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>1fa9eb9dbbe14c679c1dbd3e6dce8bb6</uuid>
+                            <name>VM {#VM.NAME} Replication mode</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} replication mode.</description>
+                            <valuemap>
+                                <name>Hyper-V VM Replication Mode</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['ReplMode']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c1f794e053b74392a5a1a456abb43472</uuid>
+                            <name>VM {#VM.NAME} Replication state</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} replication state.</description>
+                            <valuemap>
+                                <name>Hyper-V VM Replication State</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['ReplState']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>96c9d80ad5ca48f1a297c096d4809dd1</uuid>
+                            <name>VM {#VM.NAME} StartAction</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;StartAction&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <units>s</units>
+                            <description>{#VM.NAME} StartAction</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['StartAction']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d8e16ba91b40489d84f86f7203e01ff8</uuid>
+                            <name>VM {#VM.NAME} State</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;State&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>{#VM.NAME} State</description>
+                            <valuemap>
+                                <name>Hyper-V VM State</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['State']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>190751373fb14012a4a68141c73fbdc3</uuid>
+                            <name>VM {#VM.NAME} Uptime</name>
+                            <type>DEPENDENT</type>
+                            <key>ms.hyperv.vm[{#VM.NAME},&quot;Uptime&quot;]</key>
+                            <delay>0</delay>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <units>s</units>
+                            <description>{#VM.NAME} Uptime</description>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$['{#VM.NAME}']['Uptime']</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ms.hyperv[full]</key>
+                            </master_item>
+                            <request_method>POST</request_method>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>VM {#VM.NAME}</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>bb2850b15490481ba77d8dbb2a3fbf46</uuid>
+                            <expression>count(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;State&quot;],#3,&quot;ne&quot;,&quot;2&quot;)=3 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;])=0 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;StartAction&quot;])=3 and change(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;State&quot;])&gt;0</expression>
+                            <name>VM {#VM.NAME} is not running, but IT WAS RUNING BEFORE</name>
+                            <priority>AVERAGE</priority>
+                            <description>VM {#VM.NAME} not in &quot;Running&quot; state ({ITEM.LASTVALUE})</description>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                </tag>
+                                <tag>
+                                    <tag>vm</tag>
+                                    <value>not running</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>26f203d365ec44f582022ca6fc4e57c6</uuid>
+                            <expression>count(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;State&quot;],#3,&quot;ne&quot;,&quot;2&quot;)=3 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;])=0 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;StartAction&quot;])=4</expression>
+                            <name>VM {#VM.NAME} is not running and start IS AUTOMATIC</name>
+                            <priority>DISASTER</priority>
+                            <description>VM {#VM.NAME} not in &quot;Running&quot; state ({ITEM.LASTVALUE})</description>
+                            <manual_close>YES</manual_close>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                </tag>
+                                <tag>
+                                    <tag>vm</tag>
+                                    <value>MUST BE running</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>4d0ec82b7cbe402f92d7b728dec40e91</uuid>
+                            <expression>count(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplHealth&quot;],#3,&quot;ne&quot;,&quot;1&quot;)=3 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;])&lt;&gt;0</expression>
+                            <name>VM {#VM.NAME} replicationg health is {ITEM.VALUE}</name>
+                            <priority>WARNING</priority>
+                            <description>VM {#VM.NAME} replicationg health is not good now.
+Replication state: {ITEM.LASTVALUE}</description>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                </tag>
+                                <tag>
+                                    <tag>vm</tag>
+                                    <value>replication</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>a893df5769634248ab9f148d4d601c9f</uuid>
+                            <expression>count(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplState&quot;],#3,&quot;ne&quot;,&quot;4&quot;)=3 and last(/Template Hyper-V Server/ms.hyperv.vm[{#VM.NAME},&quot;ReplMode&quot;])&lt;&gt;0</expression>
+                            <name>VM {#VM.NAME} replicationg state is {ITEM.VALUE}</name>
+                            <priority>WARNING</priority>
+                            <description>VM {#VM.NAME} replicationg state is not replicating now.
+Replication state: {ITEM.LASTVALUE}</description>
+                            <tags>
+                                <tag>
+                                    <tag>hyperv</tag>
+                                </tag>
+                                <tag>
+                                    <tag>vm</tag>
+                                    <value>replication</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>a8fe5a97caf94d838becb3da59ab2bc6</uuid>
+                    <name>Hyper-V Services</name>
+                    <key>service.discovery.hyperv</key>
+                    <delay>1h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SERVICE.NAME}</macro>
+                                <value>vmms</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1d</lifetime>
+                    <description>Discovery Hyper-V Services.</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>ae39c6bced514ca49e62beb4bbbd52fc</uuid>
+                            <name>Service {#SERVICE.NAME} status</name>
+                            <key>service.info[{#SERVICE.NAME}]</key>
+                            <history>{$HISTORY}</history>
+                            <trends>{$TRENDS}</trends>
+                            <description>Service {SERVICE.NAME} state.</description>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Hyper-V Services</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>dfca3fd821974c7ca8d5655f9768c8d1</uuid>
+                                    <expression>nodata(/Template Hyper-V Server/service.info[{#SERVICE.NAME}],5m)=1</expression>
+                                    <name>Cannot check {#SERVICE.NAME} service state</name>
+                                    <priority>WARNING</priority>
+                                    <description>Невозможно проверить состояние службы {#SERVICE.NAME}.</description>
+                                    <tags>
+                                        <tag>
+                                            <tag>hyperv</tag>
+                                        </tag>
+                                        <tag>
+                                            <tag>windows service</tag>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>f80ab9913a744bb298bfaf1235392016</uuid>
+                                    <expression>count(/Template Hyper-V Server/service.info[{#SERVICE.NAME}],#3,&quot;ne&quot;,&quot;0&quot;)=3</expression>
+                                    <name>Service {#SERVICE.NAME} is {ITEM.VALUE}</name>
+                                    <priority>HIGH</priority>
+                                    <description>Служба {#SERVICE.NAME} не запущена - {ITEM.VALUE}.</description>
+                                    <tags>
+                                        <tag>
+                                            <tag>hyperv</tag>
+                                        </tag>
+                                        <tag>
+                                            <tag>windows service</tag>
+                                        </tag>
+                                    </tags>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <tags>
+                <tag>
+                    <tag>Application</tag>
+                    <value>Hyper-V</value>
+                </tag>
+            </tags>
+            <macros>
+                <macro>
+                    <macro>{$HISTORY}</macro>
+                    <value>14d</value>
+                </macro>
+                <macro>
+                    <macro>{$LLD}</macro>
+                    <value>30m</value>
+                </macro>
+                <macro>
+                    <macro>{$TRENDS}</macro>
+                    <value>180d</value>
+                </macro>
+                <macro>
+                    <macro>{$UPDATE}</macro>
+                    <value>1m</value>
+                </macro>
+            </macros>
+            <valuemaps>
+                <valuemap>
+                    <uuid>c6645c83ca864868b8bc50fe6c5956fa</uuid>
+                    <name>Hyper-V VM Integration Services State</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Up to date</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Update required</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Unknown</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>f0b29102461d47aca7b128b14b793d26</uuid>
+                    <name>Hyper-V VM Replication Health</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>NotApplicable</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Normal</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Warning</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Critical</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>626f773a306b49aca6bc342ccb93e5a2</uuid>
+                    <name>Hyper-V VM Replication Mode</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>None</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Primary</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Replica</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>TestReplica</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>ExtendedReplica</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>40ce1aa59a144f35a18c956f9e5629c2</uuid>
+                    <name>Hyper-V VM Replication State</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>Disabled</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>ReadyForInitialReplication</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>InitialReplicationInProgress</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>WaitingForInitialReplication</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Replicating</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>5</value>
+                            <newvalue>PreparedForFailover</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>FailedOverWaitingCompletion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>7</value>
+                            <newvalue>FailedOver</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>8</value>
+                            <newvalue>Suspended</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Error</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>WaitingForStartResynchronize</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>Resynchronizing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>12</value>
+                            <newvalue>ResynchronizeSuspended</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>13</value>
+                            <newvalue>RecoveryInProgress</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>14</value>
+                            <newvalue>FailbackInProgress</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>15</value>
+                            <newvalue>FailbackComplete</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>16</value>
+                            <newvalue>WaitingForUpdateCompletion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>17</value>
+                            <newvalue>UpdateError</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>18</value>
+                            <newvalue>WaitingForRepurposeCompletion</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>19</value>
+                            <newvalue>PreparedForSyncReplication</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>20</value>
+                            <newvalue>PreparedForGroupReverseReplication</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>21</value>
+                            <newvalue>FiredrillInProgress</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>13712e9e137b4ab7a1e45a1013a24bb7</uuid>
+                    <name>Hyper-V VM Start Action</name>
+                    <mappings>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>None</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>IfItWasRunning</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Automatic</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+                <valuemap>
+                    <uuid>14bfaa1aae314613b382e4b0d00a8c40</uuid>
+                    <name>Hyper-V VM State</name>
+                    <mappings>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>Other</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>2</value>
+                            <newvalue>Running</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>3</value>
+                            <newvalue>Off</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>4</value>
+                            <newvalue>Stopping</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>6</value>
+                            <newvalue>Saved</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>9</value>
+                            <newvalue>Paused</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>10</value>
+                            <newvalue>Starting</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>11</value>
+                            <newvalue>Reset</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32773</value>
+                            <newvalue>Saving</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32776</value>
+                            <newvalue>Pausing</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32777</value>
+                            <newvalue>Resuming</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32779</value>
+                            <newvalue>FastSaved</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32780</value>
+                            <newvalue>FastSaving</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32781</value>
+                            <newvalue>RunningCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32782</value>
+                            <newvalue>OffCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32783</value>
+                            <newvalue>StoppingCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32784</value>
+                            <newvalue>SavedCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32785</value>
+                            <newvalue>PausedCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32786</value>
+                            <newvalue>StartingCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32787</value>
+                            <newvalue>ResetCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32788</value>
+                            <newvalue>SavingCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32789</value>
+                            <newvalue>PausingCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32790</value>
+                            <newvalue>ResumingCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32791</value>
+                            <newvalue>FastSavedCritical</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>32792</value>
+                            <newvalue>FastSavingCritical</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>

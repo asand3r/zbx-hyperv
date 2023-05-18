@@ -33,6 +33,8 @@ Param (
     [Parameter(Position=0,Mandatory=$False)][string]$action
 )
 
+Import-Module "Hyper-V" -RequiredVersion 1.1
+
 # Script version
 $VERSION_NUM="0.2.4"
 if ($version) {
